@@ -1,0 +1,1 @@
+uv run src/stories/charts/alluvial/plot01.py
