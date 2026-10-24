@@ -17,6 +17,19 @@ The following plot uses a bee swarm plot to compare the **body mass of penguins 
 
 ![](plot01.svg)
 
+```python
+!py(plot01.py)
+```
+
+![](./plot01-py.svg)
+
+
+```jsx
+!js(plot01-js.jsx)
+```
+
+!plot(plot01-js.jsx)
+
 ## Violin
 
 The next plot combines a violin plot with a bee swarm plot, allowing us to see both the overall distribution of body mass for each species and the individual observations within those distributions.
