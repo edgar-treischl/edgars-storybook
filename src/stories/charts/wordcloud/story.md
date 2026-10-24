@@ -12,8 +12,21 @@ Word clouds provide a visual overview of the most prominent words in a text, wit
  The Alice in Wonderland plot shows the most frequently occurring words in the story after common stop words and “alice” have been removed. Larger words appear more often in the text, offering a visual impression of the language and vocabulary that characterize the story.
 
 
+```python
+!py(plot01.py)
+```
+
+![](./plot01-py.svg)
+
 ```r
 !r(plot01.R)
 ```
 
 ![](./plot01.svg)
+
+
+```jsx
+!js(plot01-js.jsx)
+```
+
+!plot(plot01-js.jsx)
