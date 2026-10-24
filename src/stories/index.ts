@@ -1,3 +1,4 @@
+import type { ComponentType } from "react"
 import type { Story } from "./types"
 import { parseMarkdownStory } from "./parseMarkdownStory"
 
@@ -18,11 +19,16 @@ const imageModules = import.meta.glob(
   { eager: true, query: "?inline", import: "default" },
 ) as Record<string, string>
 
-// Load all R code files as raw text for easy inclusion in stories
+// Code is displayed as text; only explicitly referenced JSX plots are rendered.
 const codeModules = import.meta.glob(
-  "./**/*.R",
+  "./**/*.{R,py,js,jsx}",
   { eager: true, query: "?raw", import: "default" },
 ) as Record<string, string>
+
+const plotModules = import.meta.glob<ComponentType>(
+  "./**/*.jsx",
+  { eager: true, import: "default" },
+)
 
 export const stories = Object.entries(markdownModules)
   .map(([path, content]) => {
@@ -55,6 +61,17 @@ export const stories = Object.entries(markdownModules)
       return code
     }
 
-    return parseMarkdownStory(content, imagePath, codePath)
+    const plotPath = (fileName: string) => {
+      const key = `${basePath}/${fileName}`
+      const Plot = plotModules[key]
+
+      if (!Plot) {
+        console.warn(`Story plot component not found: ${key}`)
+      }
+
+      return Plot
+    }
+
+    return parseMarkdownStory(content, imagePath, codePath, plotPath)
   })
   .filter((story) => story !== null) as Story[]

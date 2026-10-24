@@ -5,9 +5,79 @@ import { highlightCode } from "./highlight"
 import { parseInlineMarkdown } from "./utils/parseMarkdown"
 import { LandingPage } from "./components/LandingPage"
 import ScrollToTop from "./components/ScrollToTop"
+import type { StoryImplementation, StoryLanguage } from "./stories/types"
+
+const languageLabels: Record<StoryLanguage, string> = {
+  r: "R",
+  python: "Py",
+  javascript: "JS",
+}
+
+function CodeSnippet({ implementation }: { implementation: StoryImplementation }) {
+  const [highlightedCode, setHighlightedCode] = useState("")
+  const [error, setError] = useState(false)
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copying" | "copied" | "error">("idle")
+
+  useEffect(() => {
+    if (copyStatus !== "copied") return
+
+    const timeout = window.setTimeout(() => setCopyStatus("idle"), 2000)
+    return () => window.clearTimeout(timeout)
+  }, [copyStatus])
+
+  async function copyCode() {
+    setCopyStatus("copying")
+    try {
+      await navigator.clipboard.writeText(implementation.code)
+      setCopyStatus("copied")
+    } catch (cause) {
+      console.error("Could not copy story code", cause)
+      setCopyStatus("error")
+    }
+  }
+
+  useEffect(() => {
+    let cancelled = false
+    highlightCode(implementation.code, implementation.syntax).then(
+      (html) => {
+        if (!cancelled) setHighlightedCode(html)
+      },
+      (cause: unknown) => {
+        console.error("Could not highlight story code", cause)
+        if (!cancelled) setError(true)
+      },
+    )
+    return () => { cancelled = true }
+  }, [implementation])
+
+  return (
+    <section className="code-section">
+      <div className="section-header">
+        <h2>Code Snippet ({languageLabels[implementation.language]})</h2>
+        <button
+          onClick={copyCode}
+          disabled={copyStatus === "copying"}
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {copyStatus === "copied" ? "Copied!" : copyStatus === "copying" ? "Copying..." : "Copy"}
+        </button>
+      </div>
+      {copyStatus === "error" && (
+        <p role="alert">Could not copy code. Please try again or copy it manually.</p>
+      )}
+      {error && <p role="alert">Syntax highlighting could not be loaded.</p>}
+      {highlightedCode ? (
+        <div className="shiki" dangerouslySetInnerHTML={{ __html: highlightedCode }} />
+      ) : (
+        <pre><code>{implementation.code}</code></pre>
+      )}
+    </section>
+  )
+}
 
 function AppContent() {
-  const [highlightedCode, setHighlightedCode] = useState("")
+  const [language, setLanguage] = useState<StoryLanguage>("r")
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -53,12 +123,6 @@ function AppContent() {
     }
   }, [story, variant, location.pathname, navigate, isLandingPage])
 
-  useEffect(() => {
-    if (!variant) return
-
-    highlightCode(variant.code, 'r').then(setHighlightedCode)
-  }, [variant])
-
   if (isLandingPage) {
     return <LandingPage />
   }
@@ -66,6 +130,11 @@ function AppContent() {
   if (!story || !variant) {
     return null
   }
+
+  const implementation = variant.implementations.find(
+    (item) => item.language === language,
+  ) ?? variant.implementations[0]
+  const Plot = implementation.Plot
 
   const categories = [
     ...new Set(stories.map((item) => item.category)),
@@ -89,12 +158,6 @@ function AppContent() {
     if (!story) return
 
     navigate(`/${story.id}/${id}`)
-  }
-
-  function copyCode() {
-    if (!variant) return
-
-    navigator.clipboard.writeText(variant.code)
   }
 
   return (
@@ -182,27 +245,40 @@ function AppContent() {
         )}
 
 
-        <section className="preview">
-          <img
-            src={variant.image}
-            alt={variant.title}
-            className={variant.image.startsWith('data:image/svg+xml') ? 'preview-svg' : 'preview-raster'}
-          />
-        </section>
-
-        <section className="code-section">
-          <div className="section-header">
-            <h2>Code Snippet</h2>
-            <button onClick={copyCode}>
-              Copy
-            </button>
+        {variant.implementations.length > 1 && (
+          <div className="mfe-template__languages" role="group" aria-label="Code and plot language">
+            {variant.implementations.map((item) => (
+              <button
+                key={item.language}
+                type="button"
+                aria-label={{ r: "R", python: "Python", javascript: "JavaScript" }[item.language]}
+                aria-pressed={item.language === implementation.language}
+                onClick={() => setLanguage(item.language)}
+              >
+                {languageLabels[item.language]}
+              </button>
+            ))}
           </div>
+        )}
 
-          <div
-            className="shiki"
-            dangerouslySetInnerHTML={{ __html: highlightedCode }}
-          />
+        <section className="preview" aria-label={`${languageLabels[implementation.language]} plot`}>
+          {Plot ? (
+            <div className="mfe-template__live-plot" key={`${story.id}/${variant.id}/${implementation.language}`}>
+              <Plot />
+            </div>
+          ) : (
+            <img
+              src={implementation.image}
+              alt={`${variant.title} (${languageLabels[implementation.language]})`}
+              className={implementation.image.startsWith('data:image/svg+xml') ? 'preview-svg' : 'preview-raster'}
+            />
+          )}
         </section>
+
+        <CodeSnippet
+          key={`${story.id}/${variant.id}/${implementation.language}`}
+          implementation={implementation}
+        />
       </main>
     </div>
   )

@@ -1,5 +1,14 @@
 import { useNavigate } from "react-router-dom"
 import { stories } from "../stories"
+import type { StoryImplementation } from "../stories/types"
+
+function StoryThumbnail({ implementation, title }: {
+  implementation: StoryImplementation
+  title: string
+}) {
+  const Plot = implementation.Plot
+  return Plot ? <Plot /> : <img src={implementation.image} alt={title} />
+}
 
 export function LandingPage() {
   const navigate = useNavigate()
@@ -46,7 +55,7 @@ export function LandingPage() {
         <header>
           <div className="breadcrumb">Welcome</div>
           <h1>R Stories</h1>
-          <p>Explore data visualization examples built with R and ggplot2 and the R ecosystem. Select a story from the sidebar to get started.</p>
+          <p>Explore data visualization examples built with R, Python, and JavaScript. Select a story from the sidebar to get started.</p>
         </header>
 
         <section className="gallery-grid">
@@ -68,9 +77,9 @@ export function LandingPage() {
                     >
                       <div className="card-image">
                         {story.variants[0] && (
-                          <img
-                            src={story.variants[0].image}
-                            alt={story.title}
+                          <StoryThumbnail
+                            implementation={story.variants[0].implementations[0]}
+                            title={story.title}
                           />
                         )}
                       </div>

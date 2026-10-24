@@ -14,6 +14,50 @@ yarn install
 
 Update `vite.conig.ts` and use GitHub Actions to deploy. A corresponding workflow is included in the repository.
 
+## Multi-language stories
+
+Each `##` section in `src/stories/**/story.md` is one variant. Keep its shared
+description before the first code fence, then add a code/preview pair for each
+available language. The R/Py/JS toggle switches both code and plot without
+changing the description or route. Existing R-only stories need no changes.
+
+For example, `src/stories/charts/alluvial/story.md` uses:
+
+````markdown
+## Basic
+
+Shared explanation of the plot.
+
+```r
+!r(plot01.R)
+```
+
+![](./plot01-r.svg)
+
+```python
+!py(plot01.py)
+```
+
+![](./plot01-py.svg)
+
+```jsx
+!js(plot01-js.jsx)
+```
+
+!plot(plot01-js.jsx)
+````
+
+Code may be inline or referenced from local `.R`, `.py`, `.js`, or `.jsx` files.
+Supported fences are `r`, `python`/`py`, `javascript`/`js`, and `jsx`.
+Each language needs its own preview immediately after its code fence: either a
+saved image using `![](./filename.svg)` (PNG/JPEG/GIF also supported), or a
+`!plot(filename.jsx)` reference to a local React component with a default export.
+JSX is highlighted as JSX and shown under JS in the toggle. Plot components are
+trusted, bundled application code, not a runtime code runner; their dependencies
+must be installed in this project. R and Python are not executed in the browser;
+generate and commit their images separately.
+
+Run `yarn test` for story parser and asset-resolution checks.
 
 ## CSS
 

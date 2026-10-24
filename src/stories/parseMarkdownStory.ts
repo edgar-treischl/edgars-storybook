@@ -1,4 +1,5 @@
-import type { Story, StoryVariant } from "./types"
+import type { ComponentType } from "react"
+import type { Story, StoryImplementation, StoryLanguage, StoryVariant } from "./types"
 
 interface MarkdownFrontmatter {
   id: string
@@ -75,6 +76,7 @@ export function parseMarkdownStory(
   content: string,
   imagePath: (imageName: string) => string,
   codePath?: (fileName: string) => string,
+  plotPath?: (fileName: string) => ComponentType | undefined,
 ): Story | null {
   // Extract frontmatter
   const frontmatterMatch = content.match(
@@ -108,7 +110,7 @@ export function parseMarkdownStory(
   const variantSections = splitOnH2(bodyText)
 
   for (const section of variantSections) {
-    const variant = parseVariantSection(section, imagePath, codePath)
+    const variant = parseVariantSection(section, imagePath, codePath, plotPath)
     if (variant) {
       variants.push(variant)
     }
@@ -149,6 +151,7 @@ function parseVariantSection(
   section: string,
   imagePath: (imageName: string) => string,
   codePath?: (fileName: string) => string,
+  plotPath?: (fileName: string) => ComponentType | undefined,
 ): StoryVariant | null {
   // Extract title (first line, removing ## if present)
   const lines = section.split("\n")
@@ -179,43 +182,66 @@ function parseVariantSection(
     descriptionLines.pop()
   }
 
-  // Extract code block
-  let codeBlockEnd = -1
+  const implementations: StoryImplementation[] = []
+  const languageAliases: Record<string, StoryLanguage> = {
+    r: "r",
+    py: "python",
+    python: "python",
+    js: "javascript",
+    javascript: "javascript",
+    jsx: "javascript",
+  }
 
-  for (let i = codeBlockStart + 1; i < lines.length; i++) {
-    if (lines[i].startsWith("```")) {
-      codeBlockEnd = i
-      break
+  for (let start = codeBlockStart; start < lines.length; start++) {
+    if (!lines[start].startsWith("```")) continue
+
+    const fence = lines[start].slice(3).trim().toLowerCase()
+    const language = languageAliases[fence || "r"]
+    const end = lines.findIndex((line, i) => i > start && line.startsWith("```"))
+
+    if (end === -1) {
+      console.warn(`Unclosed code block in variant "${titleLine}"`)
+      return null
     }
-  }
 
-  if (codeBlockEnd === -1) {
-    return null // Unclosed code block
-  }
-
-  const codeLines = lines.slice(codeBlockStart + 1, codeBlockEnd)
-  let code = codeLines.join("\n").trim()
-
-  // Check if the code is a file reference like !r(filename.R)
-  const fileRefMatch = code.match(/^!r\((.+?)\)$/)
-  if (fileRefMatch && codePath) {
-    const fileName = fileRefMatch[1]
-    code = codePath(fileName)
-  }
-
-  // Extract image reference
-  let imageUrl = ""
-  for (let i = codeBlockEnd + 1; i < lines.length; i++) {
-    const imgMatch = lines[i].match(/!\[\]\((.+?)\)/)
-    if (imgMatch) {
-      const imageName = imgMatch[1].replace(/^\.\//, "") // Strip leading ./
-      imageUrl = imagePath(imageName)
-      break
+    const next = lines.findIndex((line, i) => i > end && line.startsWith("```"))
+    const previewLines = lines.slice(end + 1, next === -1 ? lines.length : next)
+    let code = lines.slice(start + 1, end).join("\n").trim()
+    const fileRef = code.match(/^!(?:r|py|python|js|javascript|jsx)\((.+?)\)$/)
+    if (fileRef) {
+      if (!codePath) {
+        console.warn(`No code resolver for "${fileRef[1]}"`)
+        return null
+      }
+      code = codePath(fileRef[1])
     }
-  }
 
-  if (!imageUrl) {
-    return null // No image found
+    if (!language || !code || implementations.some((item) => item.language === language)) {
+      console.warn(`Invalid or duplicate language implementation "${fence}" in "${titleLine}"`)
+      return null
+    }
+
+    const imageRef = previewLines.join("\n").match(/!\[\]\((.+?)\)/)
+    const plotRef = previewLines.join("\n").match(/^!plot\((.+?)\)$/m)
+    const base = { language, syntax: fence === "jsx" ? "jsx" as const : language, code }
+
+    if (imageRef) {
+      const image = imagePath(imageRef[1].replace(/^\.\//, ""))
+      if (!image) return null
+      implementations.push({ ...base, image })
+    } else if (plotRef) {
+      const Plot = plotPath?.(plotRef[1].replace(/^\.\//, ""))
+      if (!Plot) {
+        console.warn(`Story plot component not found: ${plotRef[1]}`)
+        return null
+      }
+      implementations.push({ ...base, Plot })
+    } else {
+      console.warn(`Missing preview for "${fence}" in "${titleLine}"`)
+      return null
+    }
+
+    start = end
   }
 
   return {
@@ -227,7 +253,6 @@ function parseVariantSection(
     description: descriptionLines.length > 0 
       ? descriptionLines.join("\n").trim()
       : undefined,
-    code,
-    image: imageUrl,
+    implementations,
   }
 }
