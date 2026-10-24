@@ -19,7 +19,7 @@ survival_cols <- c(
   "No" = "#E69F00"
 )
 
-ggplot(
+p <- ggplot(
   dat,
   aes(
     axis1 = Class,
@@ -112,3 +112,13 @@ ggplot(
     ),
     plot.margin = margin(15, 25, 15, 15)
   )
+
+
+ggsave(
+  "plot01.svg",
+  plot = p,
+  width = 5.3333,
+  height = 3.3333,
+  units = "in",
+  device = "svg"
+)

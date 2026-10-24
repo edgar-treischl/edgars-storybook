@@ -17,4 +17,4 @@ The following plot uses an alluvial plot to examine Titanic passenger survival b
 !r(plot01.R)
 ```
 
-![](./plot01.svg)
+![](./plot01-r.svg)
