@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useLocation, useNavigate, BrowserRouter } from "react-router-dom"
+import { useLocation, useNavigate, HashRouter } from "react-router-dom"
 import { stories } from "./stories"
 import { highlightCode } from "./highlight"
 import { parseInlineMarkdown } from "./utils/parseMarkdown"
@@ -286,10 +286,10 @@ function AppContent() {
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ScrollToTop />
       <AppContent />
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
