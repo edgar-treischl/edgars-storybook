@@ -18,6 +18,7 @@ Word clouds provide a visual overview of the most prominent words in a text, wit
 
 ![](./plot01-py.svg)
 
+
 ```r
 !r(plot01.R)
 ```
@@ -30,3 +31,10 @@ Word clouds provide a visual overview of the most prominent words in a text, wit
 ```
 
 !plot(plot01-js.jsx)
+
+
+
+
+
+
+
