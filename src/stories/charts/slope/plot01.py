@@ -4,12 +4,7 @@ from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
-from adjustText import adjust_text
 
-
-# --------------------------------------------------
-# Configuration
-# --------------------------------------------------
 
 OUTPUT_PATH = Path("src/stories/charts/slope/plot01-py.svg")
 
@@ -28,23 +23,20 @@ TITLE_COLOR = "#25364A"
 TEXT_COLOR = "#404040"
 MUTED_COLOR = "#808080"
 GRID_COLOR = "#E8EBEF"
-
-
-# --------------------------------------------------
-# 1. Load data
-# --------------------------------------------------
+CONNECTOR_COLOR = "#BFC5CD"
 
 URL = (
     "https://raw.githubusercontent.com/"
     "jennybc/gapminder/main/inst/extdata/gapminder.tsv"
 )
 
+CONTINENTS = ["Africa", "Americas", "Asia", "Europe"]
+
+# --------------------------------------------------
+# Load and prepare data
+# --------------------------------------------------
+
 gapminder = pd.read_csv(URL, sep="\t")
-
-
-# --------------------------------------------------
-# 2. Find the five largest gains per continent
-# --------------------------------------------------
 
 endpoints = gapminder.loc[
     gapminder["year"].isin([1952, 2007])
@@ -59,12 +51,17 @@ wide = (
         columns="year",
         values="lifeExp",
     )
-    .rename(columns={1952: "life_1952", 2007: "life_2007"})
+    .rename(columns={
+        1952: "life_1952",
+        2007: "life_2007",
+    })
     .reset_index()
 )
 
 wide["gain"] = wide["life_2007"] - wide["life_1952"]
 
+# Select the five countries with the largest gains
+# in each continent.
 gains = (
     wide
     .sort_values(
@@ -73,14 +70,9 @@ gains = (
         kind="stable",
     )
     .groupby("continent", sort=False)
-    .head(3)
+    .head(5)
     .copy()
 )
-
-
-# --------------------------------------------------
-# 3. Prepare the selected countries
-# --------------------------------------------------
 
 df = endpoints.merge(
     gains[["country", "continent"]],
@@ -88,19 +80,18 @@ df = endpoints.merge(
     how="inner",
 )
 
-df = df.copy()
 df["lifeExp"] = df["lifeExp"].round(1)
-df["x"] = df["year"].map({1952: 0.0, 2007: 1.0})
+df["x"] = df["year"].map({
+    1952: 0.0,
+    2007: 1.0,
+})
 
-df["country_short"] = df["country"].replace(
-    {"Bosnia and Herzegovina": "Bosnia"}
-)
-
-continents = ["Africa", "Americas", "Asia", "Europe"]
-
+df["country_short"] = df["country"].replace({
+    "Bosnia and Herzegovina": "Bosnia",
+})
 
 # --------------------------------------------------
-# 4. Set up a clean 2 x 2 slope chart
+# Plot styling
 # --------------------------------------------------
 
 plt.rcParams.update({
@@ -127,17 +118,14 @@ fig.subplots_adjust(
     hspace=0.72,
 )
 
-
 # --------------------------------------------------
-# 5. Draw each continent independently
+# Draw continent panels
 # --------------------------------------------------
 
-for ax, continent in zip(axes.flat, continents):
-    subset = df.loc[df["continent"] == continent]
-
+for ax, continent in zip(axes.flat, CONTINENTS):
+    subset = df.loc[df["continent"] == continent].copy()
     color = COLORS[continent]
 
-    # Panel heading
     ax.set_title(
         continent,
         loc="left",
@@ -147,7 +135,6 @@ for ax, continent in zip(axes.flat, continents):
         pad=7,
     )
 
-    # Subtle horizontal grid only
     ax.set_axisbelow(True)
     ax.grid(
         axis="y",
@@ -156,7 +143,6 @@ for ax, continent in zip(axes.flat, continents):
     )
     ax.grid(axis="x", visible=False)
 
-    # Keep the chart clean
     for spine in ax.spines.values():
         spine.set_visible(False)
 
@@ -171,10 +157,11 @@ for ax, continent in zip(axes.flat, continents):
 
     ax.yaxis.set_major_locator(MaxNLocator(nbins=4))
 
-    # Draw one slope per country
-    labels = []
-
-    for _, country_data in subset.groupby("country", sort=False):
+    # Plot lines and endpoint markers.
+    for _, country_data in subset.groupby(
+        "country",
+        sort=False,
+    ):
         country_data = country_data.sort_values("year")
 
         x = country_data["x"].to_numpy()
@@ -199,19 +186,79 @@ for ax, continent in zip(axes.flat, continents):
             zorder=3,
         )
 
-        endpoint = country_data.loc[
-            country_data["year"] == 2007
-        ].iloc[0]
+    # --------------------------------------------------
+    # Prepare labels for the 2007 endpoints
+    # --------------------------------------------------
 
-        label = (
-            f"{endpoint['country_short']}  "
-            f"{endpoint['lifeExp']:.1f}"
+    endpoints_2007 = (
+        subset.loc[subset["year"] == 2007]
+        .sort_values(
+            ["lifeExp", "country"],
+            kind="stable",
+        )
+        .copy()
+    )
+
+    ymin = subset["lifeExp"].min()
+    ymax = subset["lifeExp"].max()
+    yrange = max(ymax - ymin, 1.0)
+
+    y_bottom = ymin - yrange * 0.12
+    y_top = ymax + yrange * 0.16
+
+    ax.set_ylim(y_bottom, y_top)
+
+    # Reserve a separate column for labels.
+    ax.set_xlim(-0.08, 1.85)
+
+    label_x = 1.12
+    connector_x = 1.025
+
+    actual_y = endpoints_2007["lifeExp"].to_numpy()
+    label_count = len(actual_y)
+
+    # Evenly distribute labels vertically within the
+    # available range, keeping their order consistent
+    # with the corresponding endpoint values.
+    label_bottom = ymin - yrange * 0.06
+    label_top = ymax + yrange * 0.06
+
+    if label_count > 1:
+        label_y = [
+            label_bottom
+            + i * (label_top - label_bottom) / (label_count - 1)
+            for i in range(label_count)
+        ]
+    else:
+        label_y = actual_y.copy()
+
+    # --------------------------------------------------
+    # Draw connectors and labels
+    # --------------------------------------------------
+
+    for (_, endpoint), y_text in zip(
+        endpoints_2007.iterrows(),
+        label_y,
+    ):
+        y_point = endpoint["lifeExp"]
+
+        # Connector starts just beyond the 2007 point.
+        ax.plot(
+            [connector_x, label_x - 0.025],
+            [y_point, y_text],
+            color=CONNECTOR_COLOR,
+            linewidth=0.5,
+            alpha=0.9,
+            solid_capstyle="round",
+            zorder=4,
+            clip_on=False,
         )
 
-        text = ax.text(
-            1.065,
-            endpoint["lifeExp"],
-            label,
+        # Label sits entirely in the right-hand column.
+        ax.text(
+            label_x,
+            y_text,
+            f"{endpoint['country_short']}  {y_point:.1f}",
             fontsize=6.2,
             fontweight="bold",
             color=TEXT_COLOR,
@@ -219,51 +266,16 @@ for ax, continent in zip(axes.flat, continents):
             va="center",
             clip_on=False,
             zorder=5,
+            bbox={
+                "facecolor": BG_COLOR,
+                "edgecolor": "none",
+                "boxstyle": "square,pad=0.7",
+            },
         )
 
-        labels.append(text)
-
-    # Repel endpoint labels vertically within this panel.
-    # Keep the labels on the right side of the chart.
-    adjust_text(
-        labels,
-        ax=ax,
-        x=[1.0] * len(labels),
-        y=subset.loc[
-            subset["year"] == 2007, "lifeExp"
-        ].to_numpy(),
-        only_move={
-            "text": "y",
-            "static": "y",
-            "explode": "y",
-            "pull": "y",
-        },
-        force_text=(0.15, 0.35),
-        force_static=(0.1, 0.2),
-        force_pull=(0.01, 0.05),
-        expand=(1.05, 1.2),
-        iter_lim=150,
-        arrowprops={
-            "arrowstyle": "-",
-            "color": "#BFC5CD",
-            "lw": 0.45,
-            "alpha": 0.7,
-            "shrinkA": 1,
-            "shrinkB": 2,
-        },
-    )
-
-    # Explicitly reserve space for both year endpoints and labels
-    ax.set_xlim(-0.12, 1.42)
-
-    ymin = subset["lifeExp"].min()
-    ymax = subset["lifeExp"].max()
-    yrange = ymax - ymin
-
-    ax.set_ylim(
-        ymin - yrange * 0.12,
-        ymax + yrange * 0.16,
-    )
+    # --------------------------------------------------
+    # X-axis
+    # --------------------------------------------------
 
     ax.set_xticks([0, 1])
     ax.set_xticklabels(
@@ -273,18 +285,15 @@ for ax, continent in zip(axes.flat, continents):
         color=TITLE_COLOR,
     )
 
-    ax.tick_params(
-        axis="x",
-        pad=5,
-    )
-
+    ax.tick_params(axis="x", pad=5)
 
 # --------------------------------------------------
-# 6. Add title, subtitle, and caption
+# Title and subtitle
 # --------------------------------------------------
 
 fig.text(
-    0.105, 0.965,
+    0.105,
+    0.965,
     "A longer life",
     ha="left",
     va="top",
@@ -294,25 +303,22 @@ fig.text(
 )
 
 fig.text(
-    0.105, 0.905,
-    "The five largest gains in life expectancy",
+    0.105,
+    0.905,
+    "The five largest gains in life expectancy within each continent, 1952–2007",
     ha="left",
     va="top",
     fontsize=8,
     color="#666666",
 )
 
-fig.text(
-    0.105, 0.865,
-    "within each continent, 1952–2007",
-    ha="left",
-    va="top",
-    fontsize=8,
-    color="#666666",
-)
+# --------------------------------------------------
+# Source note
+# --------------------------------------------------
 
 fig.text(
-    0.105, 0.035,
+    0.105,
+    0.035,
     "Source: Gapminder  |  Change: 2007 minus 1952",
     ha="left",
     va="bottom",
@@ -321,15 +327,18 @@ fig.text(
 )
 
 # --------------------------------------------------
-# 7. Export SVG
+# Export SVG
 # --------------------------------------------------
 
-OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+OUTPUT_PATH.parent.mkdir(
+    parents=True,
+    exist_ok=True,
+)
 
 fig.savefig(
     OUTPUT_PATH,
     format="svg",
-    facecolor="white",
+    facecolor=BG_COLOR,
     edgecolor="none",
 )
 

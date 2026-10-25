@@ -46,11 +46,12 @@ p <- ggplot(
   )
 ) +
   geom_line(
-    linewidth = 0.9,
+    linewidth = 0.49,
     alpha = 0.8
   ) +
   geom_point(
-    size = 1.2,
+    size = 1.1,
+    stroke = 0,
     show.legend = FALSE
   ) +
   
@@ -58,17 +59,20 @@ p <- ggplot(
   geom_text_repel(
     data = right,
     aes(label = paste0(country_short, "  ", lifeExp)),
-    nudge_x = 0.06,
+    nudge_x = 0.12,
+    xlim = c(1.12, 1.85),
     hjust = 0,
     direction = "y",
-    size = 2.5,
+    size = 6.2 / ggplot2::.pt,
     fontface = "bold",
     color = "grey25",
     segment.color = "grey75",
     segment.alpha = 0.6,
+    segment.size = 0.23,
     box.padding = 0.2,
     point.padding = 0.1,
     max.overlaps = Inf,
+    seed = 42,
     show.legend = FALSE
   ) +
   
@@ -84,16 +88,16 @@ p <- ggplot(
     guide = "none"
   ) +
   
-  # Center both years with balanced space around the endpoints
+  # Reserve a separate column for endpoint labels
   scale_x_continuous(
     breaks = c(0, 1),
     labels = c("1952", "2007"),
-    limits = c(-0.12, 1.42),
+    limits = c(-0.08, 1.85),
     expand = expansion(mult = 0)
   ) +
   
   scale_y_continuous(
-    expand = expansion(mult = c(0.08, 0.12))
+    expand = expansion(mult = c(0.12, 0.16))
   ) +
   
   labs(
@@ -107,25 +111,25 @@ p <- ggplot(
     caption = "Source: Gapminder | Change: 2007 minus 1952"
   ) +
   
-  theme_minimal(base_size = 12) +
+  theme_minimal(base_size = 9) +
   theme(
     plot.title = element_text(
-      size = 14,
+      size = 12,
       face = "bold",
       color = "#25364A"
     ),
     plot.subtitle = element_text(
-      size = 12,
+      size = 8,
       color = "grey40",
       margin = margin(b = 8)
     ),
     plot.caption = element_text(
-      size = 8,
+      size = 6,
       color = "grey55",
-      margin = margin(t = 14)
+      margin = margin(t = 8)
     ),
     strip.text = element_text(
-      size = 11,
+      size = 10,
       face = "bold",
       color = "#25364A"
     ),
@@ -134,20 +138,25 @@ p <- ggplot(
       color = NA
     ),
     axis.text.x = element_text(
-      size = 10,
+      size = 7.5,
       face = "bold",
       color = "#25364A"
     ),
-    axis.text.y = element_text(color = "grey50"),
+    axis.text.y = element_text(size = 7, color = "grey50"),
     axis.title.y = element_text(
+      size = 8,
       face = "bold",
       color = "grey30"
     ),
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank(),
-    panel.spacing = grid::unit(1.2, "lines"),
+    panel.grid.major.y = element_line(
+      linewidth = 0.26,
+      color = "#E8EBEF"
+    ),
+    panel.spacing = grid::unit(10, "pt"),
     legend.position = "none",
-    plot.margin = margin(15, 15, 15, 15)
+    plot.margin = margin(8, 8, 8, 8)
   ) +
   coord_cartesian(clip = "off")
 
