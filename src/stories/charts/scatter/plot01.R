@@ -100,6 +100,8 @@ p <- ggplot(
     plot.margin = margin(8, 8, 8, 8)
   )
 
+p
+
 # 2. Export chart
 ggsave(
   "src/stories/charts/scatter/plot01-r.svg",

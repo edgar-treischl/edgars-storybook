@@ -160,7 +160,7 @@ p <- ggplot(
   ) +
   coord_cartesian(clip = "off")
 
-
+p
 
 ggsave(
   "src/stories/charts/slope/plot01-r.svg",

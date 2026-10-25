@@ -126,6 +126,8 @@ p <- ggplot(
     plot.margin = margin(8, 12, 8, 8)
   )
 
+p
+
 # 4. Export chart
 ggsave(
   "src/stories/charts/ridge/plot01-r.svg",

@@ -76,13 +76,4 @@ p <- ggplot(
     plot.margin = margin(8, 8, 8, 8)
   )
 
-# 2. Export chart
-ggsave(
-  "src/stories/charts/bees/plot01-r.svg",
-  plot = p,
-  width = 5.3333,
-  height = 3.3333,
-  units = "in",
-  device = svglite::svglite,
-  bg = "white"
-)
+p

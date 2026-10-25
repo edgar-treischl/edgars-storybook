@@ -146,6 +146,8 @@ p <- ggplot() +
     plot.margin = margin(8, 8, 8, 8)
   )
 
+p
+
 # 8. Export map as SVG
 ggsave(
   "src/stories/charts/hex/plot01-r.svg",

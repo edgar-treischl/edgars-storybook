@@ -97,6 +97,9 @@ p <- ggplot(plot_df) +
     plot.margin = margin(8, 8, 8, 8)
   )
 
+
+p
+
 # 3. Export chart
 ggsave(
   "src/stories/charts/mosaic/plot01-r.svg",
