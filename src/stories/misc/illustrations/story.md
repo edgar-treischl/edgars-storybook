@@ -5,13 +5,13 @@ category: Misc
 description: Some visual examples demonstrating why data visualization matters.
 ---
 
-## Gapminder
+## Pac-Man
 
 
 
 
 ```r
-!r(gapminder.R)
+!r(pacman.R)
 ```
 
 ![](./plot01.svg)
@@ -39,3 +39,14 @@ description: Some visual examples demonstrating why data visualization matters.
 ```
 
 ![](./plot03.svg)
+
+
+## Simpson's Paradox
+
+
+
+```r
+!r(simpson.R)
+```
+
+![](./plot04.svg)

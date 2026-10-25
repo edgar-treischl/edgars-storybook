@@ -1,13 +1,3 @@
-# Alluvial
-ggsave(
-  "src/stories/charts/alluvial/plot01-r.svg",
-  plot = p,
-  width = 5.3333,
-  height = 3.3333,
-  units = "in",
-  device = svglite::svglite,
-  bg = "white"
-)
 
 
 # Back to back
