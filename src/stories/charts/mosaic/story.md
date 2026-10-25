@@ -15,4 +15,4 @@ In the Titanic example, the mosaic plot shows the relationship between sex and s
 !r(plot01.R)
 ```
 
-![](./plot01.svg)
+![](./plot01-r.svg)

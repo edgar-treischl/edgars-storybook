@@ -16,4 +16,4 @@ The following plot uses a back-to-back bar plot to show the values for men and w
 !r(plot01.R)
 ```
 
-![](./plot01.svg)
+![](./plot01-r.svg)

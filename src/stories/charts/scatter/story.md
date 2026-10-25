@@ -21,7 +21,7 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm)) +
 
 ```
 
-![](plot01.svg)
+![](plot01-r.svg)
 
 ## Colored
 

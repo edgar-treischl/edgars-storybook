@@ -17,4 +17,4 @@ The following plot uses a treemap to show the distribution of publications acros
 !r(plot01.R)
 ```
 
-![](./plot01.svg)
+![](./plot01-r.svg)

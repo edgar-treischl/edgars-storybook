@@ -13,7 +13,7 @@ A **waffle chart** displays a part-to-whole relationship using a grid of equally
 The following plot uses a waffle chart to show *the number of pupils across different school types*. Each square represents a fixed number of pupils, while the different colors distinguish the school types. The chart shows how the pupils are distributed across the different types of schools.
 
 ```r
-!r(waffle.R)
+!r(plot01.R)
 ```
 
-![](./plot01.svg)
+![](./plot01-r.svg)

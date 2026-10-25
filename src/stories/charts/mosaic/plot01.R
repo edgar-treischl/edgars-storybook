@@ -1,7 +1,7 @@
 library(ggplot2)
 library(ggmosaic2)
 
-# Built-in Titanic data
+# 1. Prepare Titanic data
 titanic_df <- as.data.frame(Titanic)
 
 plot_df <- aggregate(
@@ -10,7 +10,8 @@ plot_df <- aggregate(
   FUN = sum
 )
 
-ggplot(plot_df) +
+# 2. Mosaic plot
+p <- ggplot(plot_df) +
   geom_mosaic(
     aes(
       x = product(Sex),
@@ -22,58 +23,87 @@ ggplot(plot_df) +
     values = c(
       "No" = "#08519c",
       "Yes" = "#6baed6"
+    ),
+    labels = c(
+      "No" = "Not survived",
+      "Yes" = "Survived"
     )
   ) +
   labs(
     x = "Sex",
     y = "Proportion",
     title = "Who survived the Titanic?",
-    subtitle = "Passenger class, sex, and survival",
+    subtitle = "Passenger sex and survival",
     fill = "Survival",
+    caption = "Source: Titanic dataset"
   ) +
-  theme_minimal()+
+  theme_minimal(base_size = 9) +
   theme(
-    panel.grid.major.x = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.grid.major.y = element_line(
-      color = "#E5E5E5",
-      linewidth = 0.4
+    plot.title = element_text(
+      size = 12,
+      face = "bold",
+      color = "#25364A",
+      margin = margin(b = 4)
+    ),
+    plot.subtitle = element_text(
+      size = 8,
+      color = "grey40",
+      margin = margin(b = 8)
+    ),
+    plot.caption = element_text(
+      size = 6,
+      color = "grey55",
+      hjust = 0,
+      margin = margin(t = 8)
     ),
     axis.text.x = element_text(
-      size = 12,
-      color = "#303030"
+      size = 7.5,
+      face = "bold",
+      color = "#25364A"
     ),
     axis.text.y = element_text(
-      color = "#555555"
+      size = 7,
+      color = "grey50"
+    ),
+    axis.title.x = element_text(
+      size = 8,
+      face = "bold",
+      color = "grey30",
+      margin = margin(t = 6)
     ),
     axis.title.y = element_text(
-      color = "#555555",
-      margin = margin(r = 10)
+      size = 8,
+      face = "bold",
+      color = "grey30",
+      margin = margin(r = 8)
+    ),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(
+      color = "#E8EBEF",
+      linewidth = 0.26
     ),
     legend.position = "right",
     legend.title = element_text(
+      size = 8,
       face = "bold",
-      color = "#303030"
+      color = "#25364A"
     ),
     legend.text = element_text(
-      color = "#444444"
+      size = 7,
+      color = "grey40"
     ),
-    plot.title = element_text(
-      size = 14,
-      face = "bold",
-      color = "#222222",
-      margin = margin(b = 5)
-    ),
-    plot.subtitle = element_text(
-      size = 12,
-      color = "#666666",
-      margin = margin(b = 15)
-    ),
-    plot.caption = element_text(
-      size = 9,
-      color = "#888888",
-      hjust = 0
-    ),
-    plot.margin = margin(15, 25, 15, 15)
+    legend.key.height = grid::unit(10, "pt"),
+    plot.margin = margin(8, 8, 8, 8)
   )
 
+# 3. Export chart
+ggsave(
+  "src/stories/charts/mosaic/plot01-r.svg",
+  plot = p,
+  width = 5.3333,
+  height = 3.3333,
+  units = "in",
+  device = svglite::svglite,
+  bg = "white"
+)

@@ -16,4 +16,4 @@ In our Gapminder example, each ridge represents the distribution of life expecta
 !r(plot01.R)
 ```
 
-![](./plot01.svg)
+![](./plot01-r.svg)

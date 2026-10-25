@@ -15,7 +15,7 @@ The following plot uses a bee swarm plot to compare the **body mass of penguins 
 !r(bees01.R)
 ```
 
-![](plot01.svg)
+![](plot01-r.svg)
 
 ```python
 !py(plot01.py)
