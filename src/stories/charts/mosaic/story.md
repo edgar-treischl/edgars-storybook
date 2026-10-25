@@ -2,7 +2,7 @@
 id: charts/mosaic
 title: Mosaic
 category: Charts
-description: A mosaic plot shows the relationship between categorical variables using the size of each tile.
+description: A patchwork of data! Mosaic plots turn categories into colorful tiles, where size tells a story and every rectangle has a role.
 ---
 
 ## Basic

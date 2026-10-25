@@ -2,7 +2,7 @@
 id: charts/alluvial
 title: Alluvial
 category: Charts
-description: An alluvial plot shows how quantities flow between categorical groups, with wider flows representing larger numbers.
+description: Watch the data flow! Alluvial plots turn tangled categories into colorful streams of connections.
 ---
 
 ## Basic

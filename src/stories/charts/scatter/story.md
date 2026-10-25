@@ -2,7 +2,7 @@
 id: charts/scatter
 title: Scatter
 category: Charts
-description: Examine the relationship between two numerical variables; reveal patterns, correlations, and outliers.
+description: Two variables, endless possibilities! Spot the patterns, catch the correlations, and hunt down those outliers.
 ---
 
 ## Basic

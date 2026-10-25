@@ -2,7 +2,7 @@
 id: charts/ridge
 title: Ridge
 category: Charts
-description: A ridge plot compares the shape and distribution of a variable across multiple groups to see differences in location, spread, or pattern.
+description: A ridge plot compares the shape and distribution of a variable across groups to see differences in location, spread, or pattern.
 ---
 
 ## Basic

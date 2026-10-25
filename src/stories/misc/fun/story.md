@@ -2,7 +2,7 @@
 id: misc/fun
 title: Fun
 category: Misc
-description: Visualization friends.
+description: At least not dead seriously.
 ---
 
 

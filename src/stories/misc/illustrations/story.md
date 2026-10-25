@@ -2,7 +2,7 @@
 id: misc/illustrations
 title: Illustrations
 category: Misc
-description: Some visual examples demonstrating why data visualization matters.
+description: Why data visualization matters.
 ---
 
 

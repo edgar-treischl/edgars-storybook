@@ -2,7 +2,7 @@
 id: charts/hexagon
 title: Hexagon
 category: Charts
-description: A *hexagon plot* represents geographic areas as equally sized hexagons, using color to show the value of a variable for each area.
+description: What if maps were made of honeycomb? Hexagon plots turn geography into colorful tiles, each revealing a little piece of the bigger picture.
 ---
 
 ## Basic

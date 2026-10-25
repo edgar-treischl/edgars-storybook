@@ -2,7 +2,7 @@
 id: charts/bar
 title: Bar
 category: Charts
-description: An alluvial plot shows how quantities flow between categorical groups, with wider flows representing larger numbers.
+description: Lower the bar, raise the stakes—see how your categories measure up!
 ---
 
 ## Minimal

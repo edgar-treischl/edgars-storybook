@@ -2,7 +2,7 @@
 id: charts/slope
 title: Slope
 category: Charts
-description: Compare changes over time; identify countries with the largest gains in life expectancy.
+description: Follow the steepest lines! Slope charts reveal who’s moving up or who’s falling behind.
 ---
 
 ## Basic

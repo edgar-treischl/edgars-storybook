@@ -2,14 +2,12 @@
 id: misc/helper
 title: Helper
 category: Misc
-description: Helper and friend to create plots.
+description: Helper and friends to create plots.
 ---
 
 ## Funnel
 
 Use such a funnel when you want to **visually connect a specific segment of one stacked bar to a target distribution** in another bar. 
-
-### In a Nutshell
 
 1. Define the **source**, **target**, and **source group**.
 

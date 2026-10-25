@@ -2,7 +2,7 @@
 id: charts/wordcloud
 title: Wordcloud
 category: Charts
-description: A word cloud visualizes word frequency by displaying more frequently used words in larger text.
+description: A cloud of words where the biggest ones steal the show—spot who's stealing whom the show.
 ---
 
 ## Basic

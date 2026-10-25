@@ -2,7 +2,7 @@
 id: charts/waffle
 title: Waffle
 category: Charts
-description: A waffle chart shows proportions as a grid of equally sized squares to compare part-to-whole relationships. 
+description: Waffle charts turn proportions into bite-sized visuals you can count at a glance. Yummy. 
 ---
 
 ## Basic

@@ -2,7 +2,7 @@
 id: charts/map
 title: Map
 category: Charts
-description: A choropleth map is a map that uses different colours or shades to represent the value of a variable across defined geographic areas.
+description: A choropleth map uses different colors or shades to represent the value of a variable across geographic areas.
 ---
 
 ## Main
