@@ -6,12 +6,12 @@ import { join } from 'path';
 
 export default defineConfig({
   // IMPORTANT for GitHub Pages deployment
-  base: '/r-stories-mfe/',
+  base: '/edgars-storybook/',
 
   plugins: [
     react(),
     federation({
-      name: 'r-stories-mfe',
+      name: 'edgars-storybook',
       filename: 'remoteEntry.js',
       exposes: {
         './App': './src/App.tsx',

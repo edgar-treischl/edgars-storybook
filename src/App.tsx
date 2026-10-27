@@ -167,10 +167,10 @@ function AppContent() {
           className="brand"
           onClick={() => navigate("/")}
         >
-          <div className="brand-mark">R</div>
+          <div className="brand-mark">ES</div>
 
           <div>
-            <strong>R Stories</strong>
+            <strong>Edgar's Storybook</strong>
           </div>
         </button>
 
