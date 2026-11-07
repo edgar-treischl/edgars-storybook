@@ -96,7 +96,7 @@ palette = {
     "white": "#FFFFFF"
 }
 
-# 5. Axis positions
+# 5. Calculate x-axis positions
 x_breaks = [
     (
         mosaic_df.loc[
@@ -121,8 +121,9 @@ chart = (
             ymax="ymax",
             fill="Survived"
         ),
-        color=None,
-        size=0
+        color="none",
+        size=0,
+        show_legend=False
     )
     + scale_fill_manual(
         values=colors
@@ -193,15 +194,22 @@ chart = (
         ),
         panel_grid_minor=element_blank(),
 
-        # Remove borders and backgrounds
+        # Remove all plot and panel borders
         panel_border=element_blank(),
         panel_background=element_blank(),
         plot_background=element_rect(
             fill=palette["white"],
-            color=None
+            color="none",
+            size=0
         ),
+
+        # Remove axis lines and ticks
         axis_line=element_blank(),
         axis_ticks=element_blank(),
+
+        # Remove legend backgrounds and borders
+        legend_background=element_blank(),
+        legend_box_background=element_blank(),
 
         # Caption
         plot_caption=element_text(
