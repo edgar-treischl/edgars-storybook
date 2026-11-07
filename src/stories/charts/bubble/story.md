@@ -17,3 +17,17 @@ The Gapminder bubble chart illustrates the relationship between GDP per capita a
 ```
 
 ![](./plot01-r.svg)
+
+
+```python
+!py(plot01.py)
+```
+
+![](./plot01-py.svg)
+
+
+```jsx
+!js(plot01-js.jsx)
+```
+
+!plot(plot01-js.jsx)

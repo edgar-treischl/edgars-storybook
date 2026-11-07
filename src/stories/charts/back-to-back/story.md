@@ -17,3 +17,10 @@ The following plot uses a back-to-back bar plot to show the values for men and w
 ```
 
 ![](./plot01-r.svg)
+
+
+```python
+!py(plot01.py)
+```
+
+![](./plot01-py.svg)
