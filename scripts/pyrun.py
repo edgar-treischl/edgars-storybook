@@ -11,6 +11,8 @@ uv run src/stories/charts/bubble/plot01.py
 
 uv run src/stories/charts/mosaic/plot01.py
 
+uv run src/stories/charts/pie/plot01.py
+
 
 uv run src/stories/charts/wordcloud/plot01.py
 

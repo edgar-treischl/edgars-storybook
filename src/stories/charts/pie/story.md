@@ -22,3 +22,9 @@ The pie chart of Donald’s Twitter data illustrates the distribution of observa
 
 
 
+
+```python
+!py(plot01.py)
+```
+
+![](./plot01-py.svg)
