@@ -16,3 +16,9 @@ In the Titanic example, the mosaic plot shows the relationship between sex and s
 ```
 
 ![](./plot01-r.svg)
+
+```python
+!py(plot01.py)
+```
+
+![](./plot01-py.svg)

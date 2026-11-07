@@ -15,6 +15,14 @@ description: Lower the bar, raise the stakes—see how your categories measure u
 ![](./plot01.svg)
 
 
+```python
+!py(plot01.py)
+```
+
+![](./plot01-py.svg)
+
+
+
 ## Flipping Axes and Faceting
 
 
