@@ -18,3 +18,10 @@ The following treemap illustrates the distribution of topics in tweets scraped f
 ```
 
 ![](./plot01-r.svg)
+
+
+```jsx
+!js(plot01-js.jsx)
+```
+
+!plot(plot01-js.jsx)
